@@ -1,11 +1,12 @@
-import styles from './page.module.css';
+'use client';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <p className={styles.center}>
-        Hello World
-      </p>
-    </main>
-  );
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function App() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace('home');
+  }, [router]);
+  return null;
 }
