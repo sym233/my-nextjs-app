@@ -11,7 +11,7 @@ const RootLayout: Layout = ({
 }) => {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen">
         {children}
       </body>
     </html>

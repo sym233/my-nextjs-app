@@ -6,7 +6,7 @@ const WithHeaderLayout: Layout = ({
 }) => {
   return (<>
     <AppBar />
-    <main className="mx-4 mt-2">
+    <main className="px-6 mt-2">
       {children}
     </main>
   </>);

@@ -27,18 +27,20 @@ const PostListComponent: FC<PostListComponentProps> = ({ blogs }) => {
 
 
 const PostList = async () => {
-  const { error, data } = await blogList();
-  return (<>
-    <h3 className="text-xl">
-      Post List
-    </h3>
-    {!!error ?
-      (<h3>Error: {error}</h3>) :
-      ((!!data && data.length) ?
-        <PostListComponent blogs={data} /> :
-        <h3>No blog yet</h3>)
-    }
-  </>);
+  const { error, data } = await blogList(0, 10);
+  return (
+    <div className="max-w-screen-2xl">
+      <h3 className="text-2xl my-2">
+        Blog List
+      </h3>
+      {!!error ?
+        (<h3>Error: {error}</h3>) :
+        ((!!data && data.length) ?
+          <PostListComponent blogs={data} /> :
+          <h3>No blog yet</h3>)
+      }
+    </div>
+  );
 };
 
 export default PostList;
