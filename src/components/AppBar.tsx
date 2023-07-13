@@ -18,6 +18,10 @@ const navLinks: NavLink[] = [
     name: 'Blog',
     link: '/blog',
   },
+  {
+    name: 'About',
+    link: '/about',
+  },
 ];
 
 interface NavItemProps {
