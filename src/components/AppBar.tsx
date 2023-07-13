@@ -1,8 +1,8 @@
 'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FC } from "react";
+import { FC } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 interface NavLink {
   name: string,
@@ -39,7 +39,7 @@ const AppBar = () => {
   return (
     <nav className="flex space-x-2 border-solid border-b px-4 py-3">
       <h3 className="font-bold text-2xl mr-4">
-        <Link href="/">Logo</Link>
+        <Link href="/">Sym233&#39;s Home Page</Link>
       </h3>
       <div className="flex flex-1 text-lg">
         <ul className="flex space-x-4">
