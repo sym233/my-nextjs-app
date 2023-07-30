@@ -24,6 +24,12 @@
     },
     "types": ["node", "cypress"]
   },
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "module": "nodenext",
+    },
+  },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { FC } from 'react';
 
-import { SelectBlog, blogList } from '@/db/blog';
+import { Blog, blogList } from '@/db/blog';
 
 
 interface PostListComponentProps {
-  blogs: SelectBlog[];
+  blogs: Blog[];
 }
 const PostListComponent: FC<PostListComponentProps> = ({ blogs }) => {
   return (<>

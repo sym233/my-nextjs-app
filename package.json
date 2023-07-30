@@ -18,15 +18,18 @@
     "eslint-config-next": "13.4.2",
     "kysely": "^0.25.0",
     "next": "13.4.2",
+    "pg": "^8.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-markdown": "^8.0.7",
-    "typescript": "5.0.4"
+    "react-markdown": "^8.0.7"
   },
   "devDependencies": {
+    "@types/pg": "^8.10.2",
     "autoprefixer": "^10.4.14",
     "cypress": "^12.17.1",
     "postcss": "^8.4.24",
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.3.2",
+    "ts-node": "^10.9.1",
+    "typescript": "5.0.4"
   }
 }
