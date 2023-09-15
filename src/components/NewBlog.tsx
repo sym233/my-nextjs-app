@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import Link from 'next/link';
 
-import { SelectBlog, blogList } from '@/db/blog';
+import { SBlog, blogList } from '@/db/blog';
 
 interface BlogDisplayProps {
-  blog: SelectBlog
+  blog: SBlog
 }
 
 const BlogDisplay: FC<BlogDisplayProps> = ({ blog }) => {
@@ -19,17 +19,17 @@ const BlogDisplay: FC<BlogDisplayProps> = ({ blog }) => {
 };
 
 const NewBlog = async () => {
-  const { error, data } = await blogList(0, 1);
+  const bl = await blogList(0, 1);
   return (
     <div className="max-w-screen-2xl border shadow-sm rounded p-2">
       <h3 className="text-xl">
         Newest Blog
       </h3>
-      {!!error ?
-        (<h3>Error: {error}</h3>) :
-        ((!!data && data.length) ?
-          <BlogDisplay blog={data[0]} /> :
-          <h3>No blog yet</h3>)
+      {bl.ok ?
+        (bl.data.length ?
+          <BlogDisplay blog={bl.data[0]} /> :
+          <h3>No blog yet</h3>) :
+        (<h3>Error: {bl.err}</h3>)
       }
     </div>
   );

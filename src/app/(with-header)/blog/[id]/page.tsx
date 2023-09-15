@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
-import { blog, SelectBlog } from '@/db/blog';
+import { blog, SBlog } from '@/db/blog';
 import { Page } from '@/types';
 import ReactMarkdown from 'react-markdown';
 
 
 interface BlogContentProps {
-  blog: SelectBlog;
+  blog: SBlog;
 }
 
 const BlogContent: FC<BlogContentProps> = ({ blog }) => {
@@ -28,14 +28,14 @@ const BlogPage: Page<BlogPageProps> = async ({ params }) => {
     return <p>Parameter Error</p>;
   }
   const b = await blog(n);
-  if (b.error) {
-    return <p>Error: {b.error}</p>;
+  if (b.ok) {
+    return (
+      <div className="border border-gray-100 rounded shadow-sm p-2 max-w-screen-2xl mx-auto">
+        <BlogContent blog={b.data} />
+      </div>
+    );
   }
-  return (
-    <div className="border border-gray-100 rounded shadow-sm p-2 max-w-screen-2xl mx-auto">
-      <BlogContent blog={b.data!} />
-    </div>
-  );
+  return <p>Error: {b.err}</p>;
 };
 
 export default BlogPage;

@@ -1,12 +1,13 @@
-import { Database, Insertable } from './types';
+import { Blog, Database, Insertable } from './types';
 import db from './client';
+import { createNewBlogs } from './blog';
 
-const blogs: Insertable<Database['blog']>[] = [
+const blogs: Insertable<Blog>[] = [
   {
     title: 'hello world',
     content: 'first blog.',
     author: 'admin',
-    creationTime: Date.now() - 60 * 1000,
+    creationTime: 1694790000000,
   },
   {
     title: 'test blog',
@@ -20,7 +21,7 @@ const blogs: Insertable<Database['blog']>[] = [
   
   Massa sed elementum tempus egestas. Nec dui nunc mattis enim ut tellus. Feugiat pretium nibh ipsum consequat nisl vel pretium lectus quam. Blandit turpis cursus in hac. Nisl suscipit adipiscing bibendum est ultricies integer quis. Convallis convallis tellus id interdum velit laoreet id. Nibh sit amet commodo nulla facilisi nullam vehicula. Netus et malesuada fames ac turpis egestas integer. Purus viverra accumsan in nisl nisi. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Est placerat in egestas erat imperdiet. Semper feugiat nibh sed pulvinar.`,
     author: 'admin',
-    creationTime: Date.now(),
+    creationTime: 1694792047844,
   },
   {
     title: 'md blog test',
@@ -37,24 +38,30 @@ const blogs: Insertable<Database['blog']>[] = [
   Just a link: https://reactjs.com.
   `,
     author: 'admin',
-    creationTime: Date.now(),
+    creationTime: 1694792247844,
   },
 ];
 
 async function down() {
-  await db.schema.dropTable('blog').ifExists().execute();
+  await db.schema.dropTable('blogInfo').ifExists().execute();
+  await db.schema.dropTable('blogContent').ifExists().execute();
 }
 
 async function up() {
   await db.schema
-    .createTable('blog')
+    .createTable('blogInfo')
     .addColumn('id', 'serial', col => col.primaryKey())
-    .addColumn('title', 'text', col => col.notNull())
-    .addColumn('content', 'text', col => col.notNull())
     .addColumn('author', 'varchar(255)', col => col.notNull())
     .addColumn('creationTime', 'bigint', col => col.notNull())
     .execute();
-  await db.insertInto('blog').values(blogs).execute();
+  await db.schema.createTable('blogContent')
+    .addColumn('id', 'serial', col => col.primaryKey())
+    .addColumn('blogId', 'serial', col => col.notNull())
+    .addColumn('title', 'text', col => col.notNull())
+    .addColumn('content', 'text', col => col.notNull())
+    .addColumn('creationTime', 'bigint', col => col.notNull())
+    .execute();
+  await createNewBlogs(blogs);
 }
 
 async function migrate() {

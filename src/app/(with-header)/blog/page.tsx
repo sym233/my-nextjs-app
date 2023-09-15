@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { FC } from 'react';
 
-import { Blog, blogList } from '@/db/blog';
+import { SBlog, blogList } from '@/db/blog';
 
 
 interface PostListComponentProps {
-  blogs: Blog[];
+  blogs: SBlog[];
 }
 const PostListComponent: FC<PostListComponentProps> = ({ blogs }) => {
   return (<>
@@ -27,17 +27,17 @@ const PostListComponent: FC<PostListComponentProps> = ({ blogs }) => {
 
 
 const PostList = async () => {
-  const { error, data } = await blogList(0, 10);
+  const res = await blogList(0, 10);
   return (
     <div className="max-w-screen-2xl">
       <h3 className="text-2xl my-2">
         Blog List
       </h3>
-      {!!error ?
-        (<h3>Error: {error}</h3>) :
-        ((!!data && data.length) ?
-          <PostListComponent blogs={data} /> :
-          <h3>No blog yet</h3>)
+      {res.ok ?
+        res.data.length ?
+          <PostListComponent blogs={res.data} /> :
+          <h3>No blog yet</h3> :
+        <h3>Error: {res.err}</h3>
       }
     </div>
   );
