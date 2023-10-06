@@ -24,7 +24,30 @@ interface BlogConent {
   creationTime: number;
 }
 
+interface UserInfo {
+  id: Generated<number>;
+  username: string;
+  // email: string;
+  // creationTime: number;
+}
+
+interface UserPassword {
+  id: Generated<number>;
+  userId: number;
+  hashedPassword: string;
+  salt: string;
+}
+
+interface Session {
+  id: Generated<string>;
+  userId: number;
+  creationTime: number;
+}
+
 export interface Database {
   blogInfo: BlogInfo;
-  blogContent: BlogConent
+  blogContent: BlogConent;
+  userInfo: UserInfo;
+  userPassword: UserPassword;
+  session: Session;
 }

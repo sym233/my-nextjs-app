@@ -1,47 +1,8 @@
+import { Pr, res } from '../utils';
 import db from './client';
 import { Blog, Database, Insertable, Selectable } from './types';
 
-
 export type SBlog = Selectable<Blog>;
-
-interface Ok<T = void> {
-  ok: true;
-  data: T;
-}
-
-interface Err {
-  ok?: false;
-  err: string;
-}
-
-type Result<T = void> = Ok<T> | Err;
-
-function err<T>(error: any): Result<T> {
-  if (error instanceof Error) {
-    return { err: error.message };
-  } else {
-    return { err: 'error' };
-  }
-}
-
-function ok(): Result<void>;
-function ok<T>(data: T): Result<T>;
-function ok<T>(data?: T): Result<T> {
-  return { ok: true, data: data as T};
-}
-
-type Pr<T = void> = Promise<Result<T>>;
-
-async function res<T>(func: Promise<T>): Pr<T> {
-  try {
-    const r = await func;
-    return ok(r);
-  } catch (e) {
-    return err(e);
-  }
-}
-
-
 
 async function _blogList(offset: number, limit: number) {
   return (
