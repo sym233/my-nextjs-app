@@ -1,9 +1,8 @@
-import { Blog, Database, Insertable } from './types';
 import db from './client';
-import { createNewBlogs } from './blog';
+import { BlogDb, Blog } from './blog';
 import { sql } from 'kysely';
 
-const blogs: Insertable<Blog>[] = [
+const blogs: Omit<Blog, 'id'>[] = [
   {
     title: 'hello world',
     content: 'first blog.',
@@ -46,7 +45,7 @@ const blogs: Insertable<Blog>[] = [
 async function down() {
   await db.schema.dropTable('blogInfo').ifExists().execute();
   await db.schema.dropTable('blogContent').ifExists().execute();
-  
+
   await db.schema.dropTable('userInfo').ifExists().execute();
   await db.schema.dropTable('userPassword').ifExists().execute();
 
@@ -60,14 +59,15 @@ async function up() {
     .addColumn('author', 'varchar(255)', col => col.notNull())
     .addColumn('creationTime', 'bigint', col => col.notNull())
     .execute();
-  await db.schema.createTable('blogContent')
+  await db.schema
+    .createTable('blogContent')
     .addColumn('id', 'serial', col => col.primaryKey())
-    .addColumn('blogId', 'serial', col => col.notNull())
+    .addColumn('blogId', 'integer', col => col.notNull())
     .addColumn('title', 'text', col => col.notNull())
     .addColumn('content', 'text', col => col.notNull())
     .addColumn('creationTime', 'bigint', col => col.notNull())
     .execute();
-  await createNewBlogs(blogs);
+  await BlogDb.createNewBlogs(blogs);
 
   await db.schema
     .createTable('userInfo')
@@ -79,15 +79,17 @@ async function up() {
   await db.schema
     .createTable('userPassword')
     .addColumn('id', 'serial', col => col.primaryKey())
-    .addColumn('userId', 'serial', col => col.notNull())
+    .addColumn('userId', 'integer', col => col.notNull())
     .addColumn('hashedPassword', 'varchar(255)', col => col.notNull())
     .addColumn('salt', 'varchar(255)', col => col.notNull())
     .execute();
 
   await db.schema
     .createTable('session')
-    .addColumn('id', 'uuid', col => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
-    .addColumn('userId', 'serial', col => col.notNull())
+    .addColumn('id', 'uuid', col =>
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
+    )
+    .addColumn('userId', 'integer', col => col.notNull())
     .addColumn('creationTime', 'bigint', col => col.notNull())
     .execute();
 }

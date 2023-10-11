@@ -2,9 +2,9 @@ import { PostgresDialect, Kysely } from 'kysely';
 import { Pool } from 'pg';
 
 import { createKysely } from '@vercel/postgres-kysely';
-import { Database } from './types';
+import { DB } from 'kysely-codegen';
 
-function pgConnect(postgresUrl: string): Kysely<Database> {
+function pgConnect(postgresUrl: string): Kysely<DB> {
   const { pathname, hostname, port, username, password } = new URL(postgresUrl);
   const pool = new Pool({
     database: pathname.slice(1),
@@ -21,11 +21,11 @@ function pgConnect(postgresUrl: string): Kysely<Database> {
   return new Kysely({ dialect });
 }
 
-const db: Kysely<Database> = (() => {
+const db: Kysely<DB> = (() => {
   if (process.env?.NODE_ENV === 'production') {
-    return createKysely<Database>();
+    return createKysely<DB>();
   } else {
-    const postgresUrl = 'postgres://postgres:postgres@localhost:15432/postgres';
+    const postgresUrl = 'postgres://postgres:postgres@localhost:5432/postgres';
     // const postgresUrl = process.env.POSTGRES_URL as string;
     return pgConnect(postgresUrl);
   }
