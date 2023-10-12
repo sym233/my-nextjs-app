@@ -4,7 +4,7 @@ export class PasswordHasher {
   static hasher(password: string, salt: string): string {
     return pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
   }
-  
+
   static createHashedPassword(password: string): {
     hashedPassword: string;
     salt: string;

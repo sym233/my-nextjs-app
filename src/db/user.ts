@@ -100,7 +100,7 @@ export class UserDb {
     }
     return {
       ...session,
-      creationTime: Number.parseInt(session.creationTime as unknown as string),
+      creationTime: Number.parseInt(session.creationTime),
     };
   }
 
