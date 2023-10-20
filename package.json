@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "ts-node ./src/migrate.ts",
-    "dbcodegen": "kysely-codegen --env-file .env.local --dialect postgres --url env(POSTGRES_URL)",
+    "dbcodegen": "kysely-codegen --env-file .env.local --dialect postgres --url \"env(POSTGRES_URL)\"",
     "cypress:open": "cypress open"
   },
   "dependencies": {
