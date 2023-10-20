@@ -3,7 +3,14 @@ import path from 'path';
 
 import { FileMigrationProvider, Migrator } from 'kysely';
 
-import db from './client';
+import { config } from 'dotenv';
+
+config({
+  path: path.join(__dirname, '../.env.local'),
+});
+
+import db from './db/client';
+
 
 async function migrate() {
   const migrator = new Migrator({
@@ -11,7 +18,7 @@ async function migrate() {
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join(__dirname, '../../migrations'),
+      migrationFolder: path.join(__dirname, '../migrations'),
     }),
   });
   const { error, results } = await migrator.migrateToLatest();

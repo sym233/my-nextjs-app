@@ -1,7 +1,7 @@
+import { exit } from 'process';
+
 import { PostgresDialect, Kysely } from 'kysely';
 import { Pool } from 'pg';
-
-import { createKysely } from '@vercel/postgres-kysely';
 import { DB } from 'kysely-codegen';
 
 function pgConnect(postgresUrl: string): Kysely<DB> {
@@ -22,13 +22,12 @@ function pgConnect(postgresUrl: string): Kysely<DB> {
 }
 
 const db: Kysely<DB> = (() => {
-  if (process.env?.NODE_ENV === 'production') {
-    return createKysely<DB>();
-  } else {
-    const postgresUrl = 'postgres://postgres:postgres@localhost:5432/postgres';
-    // const postgresUrl = process.env.POSTGRES_URL as string;
-    return pgConnect(postgresUrl);
+  const postgresUrl = process.env.POSTGRES_URL as string;
+  if (!postgresUrl) {
+    console.error("Environment Variable \"POSTGRES_URL\" not provided.");
+    exit(1);
   }
+  return pgConnect(postgresUrl);
 })();
 
 export default db;
