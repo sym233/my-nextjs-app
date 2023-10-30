@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { notFound } from 'next/navigation';
 
 import { BlogDb, Blog } from '@/db/blog';
 import { Page } from '@/types';
@@ -25,17 +26,15 @@ type BlogPageProps = {
 const BlogPage: Page<BlogPageProps> = async ({ params }) => {
   const n = parseInt(params.id);
   if (Number.isNaN(n)) {
-    return <p>Parameter Error</p>;
+    notFound();
   }
   const b = await BlogDb.blog(n);
   if (b) {
     return (
-      <div className="border border-gray-100 rounded shadow-sm p-2 max-w-screen-2xl mx-auto">
-        <BlogContent blog={b} />
-      </div>
+      <BlogContent blog={b} />
     );
   }
-  return <p>Error: No Blog Found</p>;
+  notFound();
 };
 
 export default BlogPage;
