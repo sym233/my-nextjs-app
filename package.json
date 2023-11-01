@@ -20,7 +20,7 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "kysely": "^0.25.0",
-    "next": "13.4.2",
+    "next": "14.0.1",
     "pg": "^8.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -1,9 +1,11 @@
+import { modStr } from './utils';
+
 describe('register api', () => {
   const username = 'test1';
   const password = 'testpassword';
 
   before(() => {
-    cy.request('patch', '/api/user', { username, password }).then(response => {
+    cy.request('delete', '/api/user', { username, password }).then(response => {
       const { status } = response;
       assert.equal(status, 200);
     });
@@ -36,9 +38,9 @@ describe('register api', () => {
   });
 
   it('should not delete user', () => {
-    cy.request('patch', '/api/user', {
+    cy.request('delete', '/api/user', {
       username,
-      password: password + '1',
+      password: modStr(password),
     }).then(response => {
       const { body, status } = response;
       assert.equal(status, 200);
@@ -48,7 +50,7 @@ describe('register api', () => {
   });
 
   it('should delete user', () => {
-    cy.request('patch', '/api/user', { username, password }).then(response => {
+    cy.request('delete', '/api/user', { username, password }).then(response => {
       const { body, status } = response;
       assert.equal(status, 200);
       assert(body.ok);

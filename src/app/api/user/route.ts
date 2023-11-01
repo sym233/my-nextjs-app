@@ -19,9 +19,8 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
+export async function DELETE(request: Request) {
   // delete user
-  // nextjs seems not to support delete method
   try {
     const { username, password } = await request.json();
     if (typeof username !== 'string' || typeof password !== 'string') {

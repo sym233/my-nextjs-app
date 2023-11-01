@@ -1,3 +1,5 @@
+import { modStr } from './utils';
+
 describe('login api', () => {
   const username = 'test2';
   const password = 'testpassword';
@@ -19,7 +21,7 @@ describe('login api', () => {
   it('should not login', () => {
     cy.request('post', '/api/session', {
       username,
-      password: password + '1',
+      password: modStr(password),
     }).then(response => {
       const { body, status } = response;
       assert.equal(status, 200);
@@ -54,7 +56,7 @@ describe('login api', () => {
       url: '/api/session',
       method: 'get',
       headers: {
-        Authentication: session + '1',
+        Authentication: modStr(session),
       },
     }).then(response => {
       const { body, status } = response;
@@ -76,15 +78,16 @@ describe('login api', () => {
       assert.equal(status, 200);
       assert(body.ok);
       assert.hasAnyKeys(body.data, ['userId']);
+      assert.equal(body.data.username, username);
     });
   });
 
   it('should not logout', () => {
     cy.request({
       url: '/api/session',
-      method: 'patch',
+      method: 'delete',
       headers: {
-        Authentication: session + '1',
+        Authentication: modStr(session),
       },
     }).then(response => {
       const { body, status } = response;
@@ -96,7 +99,7 @@ describe('login api', () => {
   it('should logout', () => {
     cy.request({
       url: '/api/session',
-      method: 'patch',
+      method: 'delete',
       headers: {
         Authentication: session,
       },
@@ -124,6 +127,6 @@ describe('login api', () => {
 
   after(() => {
     // delete this user
-    cy.request('patch', '/api/user', { username, password });
+    cy.request('delete', '/api/user', { username, password });
   });
 });

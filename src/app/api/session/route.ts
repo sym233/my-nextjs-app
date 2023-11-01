@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
+export async function DELETE(request: Request) {
   // logout
   try {
     const sessionId = request.headers.get('Authentication');
