@@ -1,23 +1,25 @@
-import { UserDb } from "@/db/user";
-import { BaseError, errorToResponse, ok } from "@/utils";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
-  // register
-  try {
-    const { username, password } = await request.json();
-    if (typeof username !== 'string' || typeof password !== 'string') {
-      throw BaseError.parameterError();
-    }
-    const created = await UserDb.createUserByPassword(username, password);
-    if (!created) {
-      throw BaseError.registerError();
-    }
-    return NextResponse.json(ok());
-  } catch (e){
-    return errorToResponse(e);
-  }
-}
+import { UserDb } from '@/db/user';
+import { BaseError, errorToResponse, ok } from '@/utils';
+
+// not open register now
+// export async function POST(request: Request) {
+//   // register
+//   try {
+//     const { username, password } = await request.json();
+//     if (typeof username !== 'string' || typeof password !== 'string') {
+//       throw BaseError.parameterError();
+//     }
+//     const created = await UserDb.createUserByPassword(username, password);
+//     if (!created) {
+//       throw BaseError.registerError();
+//     }
+//     return NextResponse.json(ok());
+//   } catch (e){
+//     return errorToResponse(e);
+//   }
+// }
 
 export async function DELETE(request: Request) {
   // delete user

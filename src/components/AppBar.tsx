@@ -3,6 +3,9 @@
 import { FC } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useShallow } from 'zustand/react/shallow';
+
+import { useSessionStore } from '@/store';
 
 interface NavLink {
   name: string,
@@ -39,6 +42,32 @@ const NavItem: FC<NavItemProps> = ({ navLink }) => {
   );
 }
 
+const DropDown = () => {
+  const logout = useSessionStore(state => state.logout);
+  return (<>
+    <ul className="absolute h-0 hidden overflow-hidden p-2 border-black border-solid group-hover:h-fit group-hover:border group-hover:block">
+      <li className="cursor-not-allowed">Profile</li>
+      <li className="cursor-pointer" onClick={logout}>Log Out</li>
+    </ul>
+  </>)
+}
+
+const UserMenu = () => {
+  const { username } = useSessionStore(useShallow(({ username }) => ({ username })));
+  return (
+    <div className="w-20">
+      {username ? 
+        (<div className="group">
+          <span>{username}</span>
+          <DropDown />
+        </div>) :
+        (<span><Link href="/login">Log in</Link></span>)
+      }
+    </div>
+    
+  )
+}
+
 const AppBar = () => {
   return (
     <nav className="flex space-x-2 border-solid border-b px-4 py-3">
@@ -50,7 +79,9 @@ const AppBar = () => {
           {navLinks.map(navLink => <NavItem key={navLink.name} navLink={navLink} />)}
         </ul>
       </div>
-      <div className="cursor-not-allowed">Log in</div>
+      <div>
+        <UserMenu/>
+      </div>
     </nav>
   );
 };

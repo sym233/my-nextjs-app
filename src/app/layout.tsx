@@ -1,5 +1,6 @@
 import { Layout } from '@/types';
 import './globals.css';
+import AfterHydration from '@/components/AfterHydration';
 
 export const metadata = {
   title: 'Create Next App',
@@ -13,6 +14,7 @@ const RootLayout: Layout = ({
     <html lang="en">
       <body>
         {children}
+        <AfterHydration />
       </body>
     </html>
   );

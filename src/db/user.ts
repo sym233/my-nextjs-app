@@ -89,10 +89,11 @@ export class UserDb {
 
   static async validateSession(
     sessionId: string
-  ): Promise<{ userId: number; creationTime: number } | undefined> {
+  ): Promise<{ userId: number; username: string; creationTime: number } | undefined> {
     const session = await db
       .selectFrom('session')
-      .select(['session.userId', 'creationTime'])
+      .innerJoin('userInfo', 'userInfo.id', 'session.userId')
+      .select(['session.userId', 'userInfo.username', 'creationTime'])
       .where('session.id', '=', sessionId)
       .executeTakeFirst();
     if (!session) {

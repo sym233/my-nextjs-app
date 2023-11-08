@@ -13,11 +13,13 @@ interface Err {
 export type Result<T = void> = Ok<T> | Err;
 
 export function err(error: any): Err {
+  if (typeof error === 'string') {
+    return { ok: false, err: error };
+  }
   if (error instanceof Error) {
     return { ok: false, err: error.message };
-  } else {
-    return { ok: false, err: 'Unknown Error' };
   }
+  return { ok: false, err: 'Unknown Error' };
 }
 
 export function ok(): Ok<void>;
