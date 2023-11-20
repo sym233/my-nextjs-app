@@ -1,22 +1,18 @@
-import { UserDb } from "@/db/user";
-import { BaseError, errorToResponse, ok } from "@/utils";
-import { NextResponse } from "next/server";
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+
+import { UserDb } from '@/db/user';
+import { getAuth } from '@/serv';
+import { BaseError, errorToResponse, ok } from '@/utils';
 
 export async function GET(request: Request) {
   // session status
-  try {
-    const sessionId = request.headers.get('Authentication');
-    if (!sessionId) {
-      throw BaseError.credentialError();
-    }
-    const ses = await UserDb.validateSession(sessionId);
-    if (!ses) {
-      throw BaseError.credentialError();
-    }
-    return NextResponse.json(ok(ses));
-  } catch (e) {
-    return errorToResponse(e);
+  const session = await getAuth();
+  if (!session) {
+    return errorToResponse(BaseError.credentialError());
   }
+  cookies().set('sessionId', session.sessionId);
+  return NextResponse.json(ok(session));
 }
 
 export async function POST(request: Request) {
@@ -30,6 +26,7 @@ export async function POST(request: Request) {
     if (!session) {
       throw BaseError.credentialError();
     }
+    cookies().set('sessionId', session.sessionId);
     return NextResponse.json(ok(session));
   } catch (e) {
     return errorToResponse(e);
@@ -38,15 +35,11 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   // logout
-  try {
-    const sessionId = request.headers.get('Authentication');
-    if (!sessionId || !await UserDb.validateSession(sessionId)) {
-      throw BaseError.credentialError();
-    }
-    await UserDb.logout(sessionId);
-    return NextResponse.json(ok());
-  } catch (e) {
-    return errorToResponse(e);
+  const session = await getAuth();
+  cookies().delete('sessionId');
+  if (!session) {
+    return errorToResponse(BaseError.credentialError());
   }
+  await UserDb.logout(session.sessionId);
+  return NextResponse.json(ok());
 }
-

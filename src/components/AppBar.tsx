@@ -3,6 +3,7 @@
 import { FC } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useSessionStore } from '@/store';
@@ -43,11 +44,18 @@ const NavItem: FC<NavItemProps> = ({ navLink }) => {
 }
 
 const DropDown = () => {
+  const router = useRouter();
   const logout = useSessionStore(state => state.logout);
+  const onClick = () => {
+    logout();
+    router.refresh();
+  }
   return (<>
-    <ul className="absolute h-0 hidden overflow-hidden p-2 border-black border-solid group-hover:h-fit group-hover:border group-hover:block">
-      <li className="cursor-not-allowed">Profile</li>
-      <li className="cursor-pointer" onClick={logout}>Log Out</li>
+    <ul id="user-drop-down" className="absolute h-0 hidden overflow-hidden p-2 border-black border-solid group-hover:h-fit group-hover:border group-hover:block">
+      <li className="cursor-pointer">
+        <Link href="/profile">Profile</Link>
+      </li>
+      <li className="cursor-pointer" onClick={onClick}>Log Out</li>
     </ul>
   </>)
 }

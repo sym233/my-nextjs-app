@@ -22,7 +22,7 @@ const InputArea = () => {
   };
 
   return (
-    <div className="border border-blackb border-solid p-4">
+    <div className="border border-black border-solid p-4">
       {failure && <p>Message: {failure}</p>}
       {username ?
         (<>
@@ -44,7 +44,7 @@ const InputArea = () => {
             />
           </div>
           <div>
-            <button onClick={submit}>OK</button>
+            <button className="border border-gray border-solid p-1" onClick={submit} disabled={!inputUsername || !password}>OK</button>
           </div>
         </div>)}
     </div>

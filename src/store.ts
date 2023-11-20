@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Pr, err, ok } from './utils';
+
+import { ClientFetch } from './fetch';
 
 interface SessionStore {
   username?: string;
   sessionId?: string;
   failure?: string;
+  refresh: () => Promise<void>;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -16,74 +18,42 @@ export const useSessionStore = create<SessionStore>()(
       username: undefined,
       sessionId: undefined,
       failure: undefined,
-      login: async (username, password) => {
-        const res = await login(username, password);
+      refresh: async () => {
+        const res = await ClientFetch.refresh();
         if (res.ok) {
-          set({ username, sessionId: res.data.sessionId, failure: undefined });
+          const { sessionId, username } = res.data;
+          set({ sessionId, username });
+        } else {
+          set({
+            sessionId: undefined,
+            username: undefined,
+          });
+        }
+      },
+      login: async (username, password) => {
+        const res = await ClientFetch.login(username, password);
+        if (res.ok) {
+          const { sessionId } = res.data;
+          set({ username, sessionId, failure: undefined });
         } else {
           set({ failure: res.err });
         }
       },
       logout: async () => {
-        const res = await logout();
         set({
-            sessionId: undefined,
-            username: undefined,
-            failure: res.ok ? undefined : res.err,
+          sessionId: undefined,
+          username: undefined,
+        });
+        const res = await ClientFetch.logout();
+        set({
+          failure: res.ok ? undefined : res.err,
         });
       },
     }),
     {
       name: 'store',
-      partialize: ({ username, sessionId }) => ({ username, sessionId }),
+      partialize: () => ({}),
       skipHydration: true,
     }
   )
 );
-
-async function login(
-  username: string,
-  password: string
-): Pr<{ sessionId: string }> {
-  try {
-    const res = await fetch('/api/session', {
-      method: 'post',
-      body: JSON.stringify({ username, password }),
-    });
-    const j = await res.json();
-    if (j.ok) {
-      const sessionId = j.data.sessionId as string;
-      localStorage.setItem('session', JSON.stringify({ username, sessionId }));
-      return ok({ sessionId });
-    } else {
-      return err(j.err);
-    }
-  } catch (e) {
-    return err(e);
-  }
-}
-
-async function logout(): Pr {
-  try {
-    const session = localStorage.getItem('session');
-    if (!session) {
-      throw new Error('No Session Found');
-    }
-    localStorage.removeItem('session');
-    const { sessionId } = JSON.parse(session) as { username: string, sessionId: string };
-    const res = await fetch('/api/session', {
-      method: 'delete',
-      headers: {
-        Authentication: sessionId,
-      },
-    });
-    const j = await res.json();
-    if (j.ok) {
-      return ok();
-    } else {
-      return err(j.err);
-    }
-  } catch (e) {
-    return err(e);
-  }
-}

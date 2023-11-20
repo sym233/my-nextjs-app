@@ -31,6 +31,7 @@ describe('login api', () => {
   });
 
   let session = '';
+  let cookie = '';
   it('should login', () => {
     cy.request('post', '/api/session', {
       username,
@@ -38,9 +39,15 @@ describe('login api', () => {
     }).then(response => {
       const { body, status } = response;
       assert.equal(status, 200);
-      assert(body.ok);
+      assert.isTrue(body.ok);
       assert.isString(body.data.sessionId);
       session = body.data.sessionId;
+    });
+
+    cy.getCookie('sessionId').then(c => {
+      cookie = (c && c.value) || '';
+      assert.isNotEmpty(cookie);
+      cy.clearAllCookies();
     });
   });
 
@@ -96,6 +103,17 @@ describe('login api', () => {
     });
   });
 
+  it('should be valid cookie', () => {
+    cy.setCookie('sessionId', cookie);
+    cy.request('/api/session').then(response => {
+      const { body, status } = response;
+      assert.equal(status, 200);
+      assert(body.ok);
+      assert.hasAnyKeys(body.data, ['userId']);
+      assert.equal(body.data.username, username);
+    });
+  });
+
   it('should logout', () => {
     cy.request({
       url: '/api/session',
@@ -118,6 +136,16 @@ describe('login api', () => {
         Authentication: session,
       },
     }).then(response => {
+      const { body, status } = response;
+      assert.equal(status, 200);
+      assert.isNotTrue(body.ok);
+      assert.hasAnyKeys(body, ['err']);
+    });
+  });
+
+  it('cookie should be invalid', () => {
+    cy.setCookie('sessionId', cookie);
+    cy.request('/api/session').then(response => {
       const { body, status } = response;
       assert.equal(status, 200);
       assert.isNotTrue(body.ok);
